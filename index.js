@@ -25,6 +25,12 @@ const spawn = require('child_process').spawn;
 // For sending SDK commands to Tello
 const dgram = require('dgram');
 
+const Tello = require('tellojs');
+const { setInterval } = require('timers');
+const state = require('tellojs/src/streams/state');
+
+//tello SDK
+
 // HTTP and streaming ports
 const HTTP_PORT = 3000;
 const STREAM_PORT = 3001
@@ -59,6 +65,9 @@ server = http.createServer(function(request, response) {
   });
 
 }).listen(HTTP_PORT); // Listen on port 3000
+
+
+
 
 /*
   2. Create the stream server where the video stream will be sent
@@ -109,6 +118,136 @@ udpClient.send("command", TELLO_PORT, TELLO_IP, null);
 // Send streamon
 udpClient.send("streamon", TELLO_PORT, TELLO_IP, null);
 
+//Another websocket to control drone via tellojs
+// const x = 140,
+//     y = 0,
+//     z = 140,
+//     speed = 40,
+//     // yaw = number,
+//     // start = {x, y, z},
+//     // end = {x, y, z},
+//     // ssid = string,
+//     // password = string
+const controlWebSocket = new WebSocket.Server({
+  port: 8000
+})
+
+async function takeoff()
+{
+  await Tello.control.takeOff()
+}
+
+async function land(){
+  await Tello.control.land()
+}
+
+async function rotateRight(degree)
+{
+  await Tello.control.rotate.clockwise(degree)
+}
+
+async function rotateLeft(degree)
+{
+  await Tello.control.rotate.counterClockwise(degree)
+}
+async function forward(units)
+{
+  await Tello.control.move.front(units)
+}
+async function backward(units)
+{
+  await Tello.control.move.back(units)
+}
+async function up(units)
+{
+  await Tello.control.move.up(units)
+}
+async function down(units)
+{
+  await Tello.control.move.down(units)
+}
+async function left(units)
+{
+  await Tello.control.move.left(units)
+}
+async function right(units)
+{
+  await Tello.control.move.right(units)
+}
+
+async function goTo()
+{
+  await Tello.control.flip.front()
+}
+
+const end = {x:100,y:100,z:100}
+async function goToPoint()
+{
+  await Tello.control.go(end,40)
+}
+
+
+const stateEmitter = Tello.receiver.state.bind()
+controlWebSocket.on("listening", async ()=>{
+  await Tello.control.connect().then(res=>{
+    console.log(res)
+  })
+})
+controlWebSocket.on("connection", (ws)=>{
+  stateEmitter.on('message', res=>{
+    ws.send(JSON.stringify(res))
+  })
+  ws.on('message', (msg)=>{
+    if(msg == "takeoff")
+  {
+    console.log('odlot')
+    takeoff()
+  }
+  if(msg== "land")
+  {
+    console.log('laduj')
+    land()
+  }
+  if(msg=== "rotate-right")
+  {
+    rotateRight(15)
+  }
+  if(msg==="rotate-left")
+  {
+    rotateLeft(15)
+  }
+  if(msg=='forward')
+  {
+    forward(120)
+  }
+  if(msg=="backward")
+  {
+    backward(120)
+  }
+  if(msg=='up')
+  {
+    up(70)
+  }
+  if(msg=="down")
+  {
+    down(70)
+  }
+  if(msg=="left")
+  {
+    left(60)
+  }
+  if(msg=="right")
+  {
+    right(60)
+  }
+  if(msg=="flyaway")
+  {
+    goToPoint()
+  }
+  })
+})
+
+
 /*
   5. Begin the ffmpeg stream. You must have Tello connected first
 */
@@ -132,4 +271,4 @@ setTimeout(function() {
   streamer.on("exit", function(code){
       console.log("Failure", code);
   });
-}, 3000);
+}, 3000)

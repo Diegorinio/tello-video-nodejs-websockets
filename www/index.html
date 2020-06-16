@@ -2,20 +2,115 @@
 <html>
 <head>
 	<title>Tello Video Stream Example</title>
-	<style type="text/css">
-		html, body {
-			background-color: #111;
-			text-align: center;
-		}
-	</style>
+	<link rel='stylesheet' href='./main.css'>
 </head>
 <body>
-	<canvas id="video-canvas"></canvas>
+	<canvas height="720" width="568" id="video-canvas"></canvas>
+	<div class='path-box'>
+		<canvas height="50" width="50" id='path-canvas'></canvas>
+	</div>
 	<script type="text/javascript" src="jsmpeg.min.js"></script>
 	<script type="text/javascript">
+		var ws = new WebSocket('ws://localhost:8000/')
 		var canvas = document.getElementById('video-canvas');
 		var url = 'ws://'+document.location.hostname+':3001/stream';
+		console.log(url)
 		var player = new JSMpeg.Player(url, {canvas: canvas});
+		var gl = canvas.getContext("webgl")
+		window.addEventListener('keydown', (event)=>{
+				switch(event.keyCode)
+				{
+					case 39:
+						console.log("right")
+						ws.send("rotate-right")
+						break;
+					case 37:
+						console.log("left")
+						ws.send("rotate-left")
+						break
+					case 80:
+						ws.send("takeoff")
+						console.log("takeoff")
+						break;
+					case 16:
+						ws.send("land")
+						console.log("land")
+						break;
+					case 87:
+						ws.send("forward")
+						console.log("ku przygodzie")
+					case 83:
+						ws.send("backward")
+						console.log("francuz")
+						break
+					case 65:
+						ws.send("left")
+						console.log("left")
+						break
+					case 68:
+						ws.send("right")
+						console.log("right")
+						break
+					case 38:
+						ws.send("up")
+						console.log('up')
+						break
+					case 40:
+						ws.send("down")
+						console.log("down")
+						break
+					case 53:
+						ws.send("flyaway")
+						console.log('flyaway')
+						break
+					
+				}
+			})
+		ws.onmessage = (msg)=>{
+			console.log(msg)
+			const content = JSON.parse(msg.data)
+			console.log(content)
+			document.querySelector('.battery-state').innerHTML = content.battery
+			document.querySelector('.temp-state').innerHTML = `${content.temperature.low} / ${content.temperature.high}`
+			document.querySelector('.h-slider').value = content.heigh
+			document.querySelector('.h-value').innerHTML = content.heigh
+		}
+		ws.onopen = ()=>
+		{
+			console.log('open')
+		}
 	</script>
+	<script>
+		var path_canvas = document.getElementById('path-canvas')
+		var path_canvasContext = path_canvas.getContext("2d")
+		path_canvasContext.fillStyle = 'black'
+		path_canvasContext.fillRect(0,0, path_canvas.width, path_canvas.height)
+		getMousePosition = (e) =>{
+    		var rect = path_canvas.getBoundingClientRect()
+    		var root = document.documentElement
+    		var mouseX = e.clientX - rect.left - root.scrollLeft
+    		var mouseY = e.clientY - rect.top - root.scrollTop
+    		return {
+        		x:mouseX,
+        		y:mouseY
+    		}
+    	}
+		path_canvas.addEventListener('mousedown',(e)=>{
+			console.log("lol")
+			var mousePos = getMousePosition(e)
+			console.log(mousePos)
+		})
+	</script>
+	<div class='drone-stats'>
+		<div class='drone-states'>
+			<span>battery:</span><p class='battery-state'>battery</p>
+			<span>temp:</span><p class='temp-state'>temp</p>
+		</div>
+		<div class='drone-height'>
+			<input type='range' min="0" max="1000" value='0' class='h-slider' id='h-range' orient='vertical'>
+			<p>Height</p>
+			<p class='h-value'></p>
+		</div>
+	</div>
 </body>
 </html>

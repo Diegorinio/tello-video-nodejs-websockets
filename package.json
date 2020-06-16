@@ -9,6 +9,7 @@
   "author": "Dennis Baldwin",
   "license": "ISC",
   "dependencies": {
+    "tellojs": "^0.1.80",
     "ws": "^7.2.3"
   }
 }

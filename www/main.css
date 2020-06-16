@@ -1,0 +1,50 @@
+html, body{
+    text-align: center;
+}
+
+#video-canvas
+{
+    height: 80vh;
+    width: 80vw;
+    border-style: solid;
+}
+#path-canvas
+{
+    border-style: solid;
+}
+.drone-states
+{
+    color:red;
+    position: absolute;
+    background-color: rgba(148, 148, 148, 0.185);
+    top:10px;
+    height:auto;
+    width: 100px;
+}
+
+.drone-height
+{
+    position: absolute;
+    top:40px;
+    right: 42px;
+}
+
+.h-slider
+{
+    background-color: aqua;
+    outline: none;
+    width: 10px;
+}
+.h-slider::-webkit-slider-thumb
+{
+    background: red;
+    width: 15px;
+    height: 15px;
+}
+
+.h-slider::-webkit-slider-thumb
+{
+    background: blue;
+    height: 15px;
+    width: 15px;
+}
