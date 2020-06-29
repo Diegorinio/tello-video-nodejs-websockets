@@ -131,119 +131,186 @@ udpClient.send("streamon", TELLO_PORT, TELLO_IP, null);
 const controlWebSocket = new WebSocket.Server({
   port: 8000
 })
-
 async function takeoff()
 {
-  await Tello.control.takeOff()
+  try{
+  return await Tello.control.takeOff()
+  }catch(err){
+    console.log(`TakeOff error ${err}`)
+  }
 }
 
-async function land(){
-  await Tello.control.land()
+async function land()
+{
+
+  try{
+  return await Tello.control.land()
+  }catch(err){
+    console.log(`Land error ${err}`)
+  }
 }
 
 async function rotateRight(degree)
 {
-  await Tello.control.rotate.clockwise(degree)
+
+  try{
+  return await Tello.control.rotate.clockwise(degree)
+  }catch(err){
+    console.log(`rotateRight error ${err}`)
+  }
 }
 
 async function rotateLeft(degree)
 {
-  await Tello.control.rotate.counterClockwise(degree)
+
+  try{
+  return await Tello.control.rotate.counterClockwise(degree)
+  }catch(err){
+    console.log(`rotateLeft error ${err}`)
+  }
 }
 async function forward(units)
 {
-  await Tello.control.move.front(units)
+  isDroneBusy = true
+  try{
+  return await Tello.control.move.front(units)
+  }catch(err){
+    console.log(`forward error ${err}`)
+  }
 }
 async function backward(units)
 {
-  await Tello.control.move.back(units)
+
+  try{
+  return await Tello.control.move.back(units)
+  }catch(err){
+    console.log(` backward error ${err}`)
+  }
 }
 async function up(units)
 {
-  await Tello.control.move.up(units)
+
+  try{
+  return await Tello.control.move.up(units)
+  }catch(err){
+    console.log(`up error ${err}`)
+  }
 }
 async function down(units)
 {
-  await Tello.control.move.down(units)
+
+  try{
+  return await Tello.control.move.down(units)
+  }catch(err){
+    console.log(`down error ${err}`)
+  }
 }
 async function left(units)
 {
-  await Tello.control.move.left(units)
+
+  try{
+  return await Tello.control.move.left(units)
+  }catch(err){
+    console.log(`left error ${err}`)
+  }
 }
 async function right(units)
 {
-  await Tello.control.move.right(units)
+
+  try{
+  return await Tello.control.move.right(units)
+  }catch(err){
+    console.log(`right error ${err}`)
+  }
 }
 
 async function goTo()
 {
-  await Tello.control.flip.front()
+
+  try{
+  return await Tello.control.flip.front()
+  }catch(err){
+    console.log(`goTo error ${err}`)
+  }
 }
 
-const end = {x:100,y:100,z:100}
-async function goToPoint()
+async function flyToPoint(x,y, z)
 {
-  await Tello.control.go(end,40)
+  //x - forward -x backward via camera, y -left -y -right z - up -z -down
+  try{
+  const fly_path = {x:x, y:y, z:z}
+  return await Tello.control.go(fly_path,40)
+  }catch(err){
+    console.log(`flyToPoint error ${err}`)
+  }
 }
 
-
+async function connect()
+{
+  try{
+    return await Tello.control.connect()
+  }catch(err){
+    console.log('enter sdk mode ', err)
+  }
+}
+connect().then(res=>{
+  console.log('connect',res)
+}, error=>{
+  console.log('connection',error)
+})
 const stateEmitter = Tello.receiver.state.bind()
 controlWebSocket.on("listening", async ()=>{
-  await Tello.control.connect().then(res=>{
-    console.log(res)
-  })
+  console.log('init')
 })
 controlWebSocket.on("connection", (ws)=>{
   stateEmitter.on('message', res=>{
     ws.send(JSON.stringify(res))
   })
   ws.on('message', (msg)=>{
-    if(msg == "takeoff")
+  switch(msg)
   {
-    console.log('odlot')
-    takeoff()
+    case "takeoff":
+      takeoff()
+      break
+    case "land":
+      land()
+      break
+    case "rotate-right":
+      rotateRight(15)
+      break
+    case "rotate-left":
+      rotateLeft(15)
+      break
+    case "forward":
+      forward(100)
+      break
+    case "backward":
+      backward(90)
+      break
+    case "up":
+      up(70)
+      break
+    case "down":
+      down(70)
+      break
+    case "left":
+      left(100)
+      break
+    case "right":
+      right(100)
+      break
+    case "flyaway":
+      flyToPoint(0,0,0)
+      break
   }
-  if(msg== "land")
-  {
-    console.log('laduj')
-    land()
-  }
-  if(msg=== "rotate-right")
-  {
-    rotateRight(15)
-  }
-  if(msg==="rotate-left")
-  {
-    rotateLeft(15)
-  }
-  if(msg=='forward')
-  {
-    forward(120)
-  }
-  if(msg=="backward")
-  {
-    backward(120)
-  }
-  if(msg=='up')
-  {
-    up(70)
-  }
-  if(msg=="down")
-  {
-    down(70)
-  }
-  if(msg=="left")
-  {
-    left(60)
-  }
-  if(msg=="right")
-  {
-    right(60)
-  }
-  if(msg=="flyaway")
-  {
-    goToPoint()
-  }
+  // if(msg.includes("FlyTo="))
+  // {
+  //   let command = msg.replace("FlyTo=", '')
+  //   console.log(JSON.parse(command))
+  //   let arg = JSON.parse(command)
+  //   console.log(arg.x,arg.y)
+  //   // flyToPoint(arg.x, 0, 0)
+  // }
   })
 })
 
