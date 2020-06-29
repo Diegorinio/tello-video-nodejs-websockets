@@ -7,7 +7,7 @@
 <body>
 	<canvas height="720" width="568" id="video-canvas"></canvas>
 	<div class='path-box'>
-		<canvas height="500" width="500" id='path-canvas'></canvas>
+		<canvas height="100" width="100" id='path-canvas'></canvas>
 	</br>
 		<span class='drone-path'>Path to fly</span>
 		<button class='fly-to-path-btn'">FLY</button>
@@ -92,7 +92,7 @@
 			markerOne.x = x
 			markerOne.y = y
 			path_canvasContext.fillStyle = 'red'
-			path_canvasContext.fillRect(x-10, y-10, 10, 10)
+			path_canvasContext.fillRect(x, y, 1, 1)
 		}
 		function setDrone()
 		{

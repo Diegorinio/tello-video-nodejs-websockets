@@ -265,6 +265,7 @@ controlWebSocket.on("listening", async ()=>{
 controlWebSocket.on("connection", (ws)=>{
   stateEmitter.on('message', res=>{
     ws.send(JSON.stringify(res))
+    // console.log(res)
   })
   ws.on('message', (msg)=>{
   switch(msg)
