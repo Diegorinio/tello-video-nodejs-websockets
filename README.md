@@ -1,3 +1,5 @@
+#Main code to show video is created by https://github.com/dbaldwin
+
 # Tello Video Stream with Node.js and WebSockets
 
 I've been looking for a way to retrieve Tello's video stream from the SDK command streamon. I also wanted to do this with the bare minimum libraries/modules and keep it as simple as possible. This has been tested on Mac and Windows.
