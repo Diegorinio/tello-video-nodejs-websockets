@@ -82,46 +82,73 @@
 			console.log('open')
 		}
 	</script>
+
 	<script>
 		var ws = new WebSocket('ws://localhost:8000/')
 		var path_canvas
 		var path_canvasContext
 		const markerOne = {x:0,y:0}
 		function placeMarker(x,y){
-			drawMap()
 			markerOne.x = x
 			markerOne.y = y
 			path_canvasContext.fillStyle = 'red'
-			path_canvasContext.fillRect(x, y, 1, 1)
+			path_canvasContext.fillRect(x, y, 5, 5)
 		}
 		function setDrone()
 		{
-			path_canvasContext.fillStyle = 'yellow'
-			path_canvasContext.fillRect(path_canvas.width/2-10, path_canvas.height/2-10, 10, 10)
+			//drone safe zone cannot be less than 20cm
+			path_canvasContext.fillStyle = 'black'
+			path_canvasContext.fillRect(-10, -10, 20, 20)
+			path_canvasContext.fillStyle = 'blue'
+			path_canvasContext.fillRect(-5, -5, 10, 10)
 		}
 		window.onload = function(){
 		var fly_btn = document.querySelector('.fly-to-path-btn')
 		path_canvas = document.getElementById('path-canvas')
 		path_canvasContext = path_canvas.getContext("2d")
+		path_canvasContext.translate(path_canvas.width/2, path_canvas.height/2)
 		getMousePosition = (e) =>{
     		var rect = path_canvas.getBoundingClientRect()
     		var root = document.documentElement
-    		var mouseX = e.clientX - rect.left
-    		var mouseY = e.clientY - rect.top
+    		// var mouseX = e.clientX - rect.left
+    		// var mouseY = e.clientY - rect.top
+			var mouseX = (e.offsetX / path_canvas.width) * 2 -1
+			var mouseY = (1-(e.offsetY / path_canvas.height)) * 2 -1
     		return {
         		x:mouseX,
         		y:mouseY
     		}
 		}
-		const dronepos = {x:path_canvas.width/2-10, y:path_canvas.height/2-10}
+		const dronepos = {x:0, y:0}
 		path_canvas.addEventListener('mousedown',(e)=>{
 			var mousePos = getMousePosition(e)
-			markerOne.x = parseInt(mousePos.x)
-			markerOne.y = parseInt(mousePos.y)
-			console.log(mousePos)
-			console.log(markerOne.x, markerOne.y)
-			placeMarker(markerOne.x, markerOne.y)
-			document.querySelector('.drone-path').innerHTML = `Path to fly \n x: ${markerOne.x-dronepos.x} y: ${markerOne.y-dronepos.y}`
+			markerOne.x = parseInt(mousePos.x*100)
+			markerOne.y = parseInt(mousePos.y*100)
+			if(markerOne.x < 20 && markerOne.x > 0)
+			{
+				document.querySelector('.drone-path').innerHTML = `Invalid path to fly x must be higher than 20`
+			}
+			else if(markerOne.x > -20 && markerOne.x < 0)
+			{
+				document.querySelector('.drone-path').innerHTML = `Invalid path to fly x must be lower than -20`
+			}
+			else
+			{
+				if(markerOne.y < 20 && markerOne.y > 0)
+				{
+					document.querySelector('.drone-path').innerHTML = `Invalid path to fly y must be higher than 20`
+				}
+				else if(markerOne.y > -20 && markerOne.y < 0)
+				{
+					document.querySelector('.drone-path').innerHTML = `Invalid path to fly y must be lower than -20`
+				}
+				else
+				{
+					console.log(markerOne.x, markerOne.y)
+					placeMarker(markerOne.x, markerOne.y)
+					document.querySelector('.drone-path').innerHTML = `Path to fly \n x: ${(markerOne.x-dronepos.x)} y: ${markerOne.y-dronepos.y}`
+				}
+			}
 		})
 		fly_btn.addEventListener("click", ()=>{
 			console.log(`fly to ${markerOne.x} ${markerOne.y}`)
@@ -131,8 +158,6 @@
 }
 	function drawMap()
 	{
-		path_canvasContext.fillStyle = 'black'
-		path_canvasContext.fillRect(0,0, path_canvas.width, path_canvas.height)
 		//drone postiiton at bottom not lower than 20
 		setDrone()
 	}
