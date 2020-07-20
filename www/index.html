@@ -5,13 +5,7 @@
 	<link rel='stylesheet' href='./main.css'>
 </head>
 <body>
-	<canvas height="720" width="568" id="video-canvas"></canvas>
-	<div class='path-box'>
-		<canvas height="100" width="100" id='path-canvas'></canvas>
-	</br>
-		<span class='drone-path'>Path to fly</span>
-		<button class='fly-to-path-btn'">FLY</button>
-	</div>
+	<canvas height="500" width="500" id="video-canvas"></canvas>
 	<script type="text/javascript" src="jsmpeg.min.js"></script>
 	<script type="text/javascript">
 		var ws = new WebSocket('ws://localhost:8000/')
@@ -37,14 +31,11 @@
 						break;
 					case 16:
 						ws.send("land")
-						console.log("land")
 						break;
 					case 87:
 						ws.send("forward")
-						console.log("ku przygodzie")
 					case 83:
 						ws.send("backward")
-						console.log("francuz")
 						break
 					case 65:
 						ws.send("left")
@@ -64,7 +55,6 @@
 						break
 					case 53:
 						ws.send("flyaway")
-						console.log('flyaway')
 						break
 					
 				}
@@ -81,86 +71,6 @@
 		{
 			console.log('open')
 		}
-	</script>
-
-	<script>
-		var ws = new WebSocket('ws://localhost:8000/')
-		var path_canvas
-		var path_canvasContext
-		const markerOne = {x:0,y:0}
-		function placeMarker(x,y){
-			markerOne.x = x
-			markerOne.y = y
-			path_canvasContext.fillStyle = 'red'
-			path_canvasContext.fillRect(x, y, 5, 5)
-		}
-		function setDrone()
-		{
-			//drone safe zone cannot be less than 20cm
-			path_canvasContext.fillStyle = 'black'
-			path_canvasContext.fillRect(-10, -10, 20, 20)
-			path_canvasContext.fillStyle = 'blue'
-			path_canvasContext.fillRect(-5, -5, 10, 10)
-		}
-		window.onload = function(){
-		var fly_btn = document.querySelector('.fly-to-path-btn')
-		path_canvas = document.getElementById('path-canvas')
-		path_canvasContext = path_canvas.getContext("2d")
-		path_canvasContext.translate(path_canvas.width/2, path_canvas.height/2)
-		getMousePosition = (e) =>{
-    		var rect = path_canvas.getBoundingClientRect()
-    		var root = document.documentElement
-    		// var mouseX = e.clientX - rect.left
-    		// var mouseY = e.clientY - rect.top
-			var mouseX = (e.offsetX / path_canvas.width) * 2 -1
-			var mouseY = (1-(e.offsetY / path_canvas.height)) * 2 -1
-    		return {
-        		x:mouseX,
-        		y:mouseY
-    		}
-		}
-		const dronepos = {x:0, y:0}
-		path_canvas.addEventListener('mousedown',(e)=>{
-			var mousePos = getMousePosition(e)
-			markerOne.x = parseInt(mousePos.x*100)
-			markerOne.y = parseInt(mousePos.y*100)
-			if(markerOne.x < 20 && markerOne.x > 0)
-			{
-				document.querySelector('.drone-path').innerHTML = `Invalid path to fly x must be higher than 20`
-			}
-			else if(markerOne.x > -20 && markerOne.x < 0)
-			{
-				document.querySelector('.drone-path').innerHTML = `Invalid path to fly x must be lower than -20`
-			}
-			else
-			{
-				if(markerOne.y < 20 && markerOne.y > 0)
-				{
-					document.querySelector('.drone-path').innerHTML = `Invalid path to fly y must be higher than 20`
-				}
-				else if(markerOne.y > -20 && markerOne.y < 0)
-				{
-					document.querySelector('.drone-path').innerHTML = `Invalid path to fly y must be lower than -20`
-				}
-				else
-				{
-					console.log(markerOne.x, markerOne.y)
-					placeMarker(markerOne.x, markerOne.y)
-					document.querySelector('.drone-path').innerHTML = `Path to fly \n x: ${(markerOne.x-dronepos.x)} y: ${markerOne.y-dronepos.y}`
-				}
-			}
-		})
-		fly_btn.addEventListener("click", ()=>{
-			console.log(`fly to ${markerOne.x} ${markerOne.y}`)
-			ws.send(`FlyTo={"x":${markerOne.y-dronepos.y},"y":${markerOne.x-dronepos.x}}`)
-		})
-	drawMap()	
-}
-	function drawMap()
-	{
-		//drone postiiton at bottom not lower than 20
-		setDrone()
-	}
 	</script>
 	<div class='drone-stats'>
 		<div class='drone-states'>

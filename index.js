@@ -64,7 +64,7 @@ server = http.createServer(function(request, response) {
     response.end(data);
   });
 
-}).listen(HTTP_PORT); // Listen on port 3000
+}).listen(HTTP_PORT, '0.0.0.0'); // Listen on port 3000
 
 
 
@@ -224,16 +224,6 @@ async function right(units)
   }
 }
 
-async function goTo()
-{
-
-  try{
-  return await Tello.control.flip.front()
-  }catch(err){
-    console.log(`goTo error ${err}`)
-  }
-}
-
 async function flyToPoint(x,y, z)
 {
   //x - forward -x backward via camera, y -left -y -right z - up -z -down
@@ -265,53 +255,62 @@ controlWebSocket.on("listening", async ()=>{
 controlWebSocket.on("connection", (ws)=>{
   stateEmitter.on('message', res=>{
     ws.send(JSON.stringify(res))
-    // console.log(res)
+    console.log(res)
   })
   ws.on('message', (msg)=>{
-  switch(msg)
-  {
-    case "takeoff":
+
+    const command = msg
+    if(command === 'takeoff')
+    {
       takeoff()
-      break
-    case "land":
+    }
+    else if(command === 'land')
+    {
       land()
-      break
-    case "rotate-right":
+    }
+    else if(command === 'rotate-right')
+    {
       rotateRight(15)
-      break
-    case "rotate-left":
+    }
+    else if(command === 'rotate-left')
+    {
       rotateLeft(15)
-      break
-    case "forward":
+    }
+    else if(command === 'forward')
+    {
       forward(100)
-      break
-    case "backward":
+    }
+    else if(command === 'backward')
+    {
       backward(90)
-      break
-    case "up":
+    }
+    else if(command === 'up')
+    {
       up(70)
-      break
-    case "down":
+    }
+    else if(command === 'down')
+    {
       down(70)
-      break
-    case "left":
-      left(100)
-      break
-    case "right":
+    }
+    else if(command === 'right')
+    {
       right(100)
-      break
-    case "flyaway":
-      flyToPoint(0,0,0)
-      break
-  }
-  // if(msg.includes("FlyTo="))
-  // {
-  //   let command = msg.replace("FlyTo=", '')
-  //   console.log(JSON.parse(command))
-  //   let arg = JSON.parse(command)
-  //   console.log(arg.x,arg.y)
-  //   // flyToPoint(arg.x, 0, 0)
-  // }
+    }
+    else if(command === 'left')
+    {
+      left(100)
+    }
+    else if(command.includes('ftp'))
+    {
+      const coords = JSON.parse(command.replace('ftp', ''))
+      console.log(coords.x,coords.y)
+      flyToPoint(coords.x,coords.y,0)
+    }
+    else
+    {
+
+    }
+
   })
 })
 

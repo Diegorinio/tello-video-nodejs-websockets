@@ -41,10 +41,3 @@ html, body{
     width: 15px;
     height: 15px;
 }
-
-.h-slider::-webkit-slider-thumb
-{
-    background: blue;
-    height: 15px;
-    width: 15px;
-}
