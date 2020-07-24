@@ -3,6 +3,7 @@
 <head>
 	<title>Tello Video Stream Example</title>
 	<link rel='stylesheet' href='./main.css'>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 </head>
 <body>
 	<canvas height="500" width="500" id="video-canvas"></canvas>
@@ -74,8 +75,17 @@
 	</script>
 	<div class='drone-stats'>
 		<div class='drone-states'>
-			<span>battery:</span><p class='battery-state'>battery</p>
-			<span>temp:</span><p class='temp-state'>temp</p>
+			<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-battery-full" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+				<path fill-rule="evenodd" d="M12 5H2a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1zM2 4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H2z"/>
+				<path d="M2 6h10v4H2V6zm12.5 3.5a1.5 1.5 0 0 0 0-3v3z"/>
+			  </svg>
+			<span class='battery-state'>battery</span>
+			</br>
+			<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-thermometer" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+				<path fill-rule="evenodd" d="M6 2a2 2 0 1 1 4 0v7.627a3.5 3.5 0 1 1-4 0V2zm2-1a1 1 0 0 0-1 1v7.901a.5.5 0 0 1-.25.433A2.499 2.499 0 0 0 8 15a2.5 2.5 0 0 0 1.25-4.666.5.5 0 0 1-.25-.433V2a1 1 0 0 0-1-1z"/>
+				<path d="M9.5 12.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+			  </svg>
+			<span class='temp-state'>temp</span>
 		</div>
 		<div class='drone-height'>
 			<input type='range' min="0" max="1000" value='0' class='h-slider' id='h-range' orient='vertical'>

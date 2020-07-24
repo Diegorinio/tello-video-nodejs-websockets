@@ -64,7 +64,7 @@ server = http.createServer(function(request, response) {
     response.end(data);
   });
 
-}).listen(HTTP_PORT, '0.0.0.0'); // Listen on port 3000
+}).listen(HTTP_PORT); // Listen on port 3000
 
 
 

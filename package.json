@@ -9,6 +9,7 @@
   "author": "Dennis Baldwin",
   "license": "ISC",
   "dependencies": {
+    "bootstrap-icons": "^1.0.0-alpha5",
     "tellojs": "^0.1.80",
     "websocket": "^1.0.31",
     "ws": "^7.3.0"
