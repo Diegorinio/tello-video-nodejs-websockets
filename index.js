@@ -118,16 +118,6 @@ udpClient.send("command", TELLO_PORT, TELLO_IP, null);
 // Send streamon
 udpClient.send("streamon", TELLO_PORT, TELLO_IP, null);
 
-//Another websocket to control drone via tellojs
-// const x = 140,
-//     y = 0,
-//     z = 140,
-//     speed = 40,
-//     // yaw = number,
-//     // start = {x, y, z},
-//     // end = {x, y, z},
-//     // ssid = string,
-//     // password = string
 const controlWebSocket = new WebSocket.Server({
   port: 8000
 })

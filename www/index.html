@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Tello Video Stream Example</title>
+	<title>Tello drone control</title>
 	<link rel='stylesheet' href='./main.css'>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 </head>
@@ -88,9 +88,25 @@
 			<span class='temp-state'>temp</span>
 		</div>
 		<div class='drone-height'>
-			<input type='range' min="0" max="1000" value='0' class='h-slider' id='h-range' orient='vertical'>
+			<input type='range' min="0" max="12000" value='0' class='h-slider' id='h-range' orient='vertical'>
 			<p>Height</p>
 			<p class='h-value'></p>
+		</div>
+		<div class='drone-position-state'>
+			<!-- Example output of state:
+{ 
+    pitch: 1,
+    roll: 0,
+    yaw: 0,
+    speed: { x: 0, y: 0, z: 0 },
+    temperature: { low: 51, high: 53 },
+    tof: 6553,
+    heigh: 0,
+    battery: 87,
+    barometer: 24.65,
+    time: 0,
+    acceleration: { x: 16, y: 3, z: -990 } 
+} -->
 		</div>
 	</div>
 </body>
