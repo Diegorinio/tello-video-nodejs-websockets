@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "tellojs": "^0.1.80",
+    "websocket": "^1.0.31",
     "ws": "^7.3.0"
   }
 }
