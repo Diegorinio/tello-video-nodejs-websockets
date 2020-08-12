@@ -53,3 +53,23 @@ html, body{
 {
     background-color: rgb(59, 124, 124);
 }
+
+.drone-icon {
+    -webkit-transform: rotate(45deg);
+    transform:rotateY(30deg);
+    margin-right: 20px;
+}
+
+.drone-speed-box
+{
+    background-color: rgb(190, 190, 190);
+    width:100px;
+}
+
+.drone-position-state
+{
+    text-align: center;
+    display: flex;
+    position: absolute;
+    left: 45%;
+}
