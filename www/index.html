@@ -62,14 +62,12 @@
 			})
 		ws.onmessage = (msg)=>{
 			const content = JSON.parse(msg.data)
-			// console.log(content)
+			console.log(content.yaw)
 			document.querySelector('.battery-state').innerHTML = content.battery
 			document.querySelector('.temp-state').innerHTML = `${content.temperature.low} / ${content.temperature.high}`
 			document.querySelector('.h-slider').value = content.heigh
 			document.querySelector('.h-value').innerHTML = content.heigh
-			document.querySelector('.drone-icon').style.transform = `rotate(${content.yaw})`
-			document.querySelector('.drone-icon').style.transform = `rotateY(${content.roll})`
-			document.querySelector('.drone-icon').style.transform = `rotateX(${content.pitch})`
+			document.querySelector('.drone-icon').style.transform = `rotate(${content.yaw}deg)`
 			document.querySelector('.drone-speed-x').innerHTML = `X: ${content.speed.x}`
 			document.querySelector('.drone-speed-y').innerHTML = `Y: ${content.speed.y}`
 			document.querySelector('.drone-speed-z').innerHTML = `Z: ${content.speed.z}`
