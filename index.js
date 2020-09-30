@@ -268,7 +268,7 @@ controlWebSocket.on("connection", (ws)=>{
     }
     else if(command === 'forward')
     {
-      forward(100)
+      forward(60)
     }
     else if(command === 'backward')
     {
@@ -276,19 +276,19 @@ controlWebSocket.on("connection", (ws)=>{
     }
     else if(command === 'up')
     {
-      up(70)
+      up(60)
     }
     else if(command === 'down')
     {
-      down(70)
+      down(60)
     }
     else if(command === 'right')
     {
-      right(100)
+      right(60)
     }
     else if(command === 'left')
     {
-      left(100)
+      left(60)
     }
     else if(command.includes('ftp'))
     {

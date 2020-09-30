@@ -9,60 +9,151 @@
 	<canvas height="500" width="500" id="video-canvas"></canvas>
 	<script type="text/javascript" src="jsmpeg.min.js"></script>
 	<script type="text/javascript">
+		var gamepad
 		var ws = new WebSocket('ws://localhost:8000/')
 		var canvas = document.getElementById('video-canvas');
 		var url = 'ws://'+document.location.hostname+':3001/stream';
 		console.log(url)
 		var player = new JSMpeg.Player(url, {canvas: canvas});
 		var gl = canvas.getContext("webgl")
+		window.addEventListener("gamepadconnected", function(e){
+			gamepad = e.gamepad
+			//0=A 1=B 2=home 3=plus 4=minus 5=1 6=2
+			console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.", gamepad.index,gamepad.id, gamepad.buttons.length, gamepad.axes.length)
+			setInterval(()=>{
+				if(gamepad.buttons[0].value == 1)
+				{
+					console.log("wiiremote up")
+				}
+				if(gamepad.buttons[1].value == 1)
+				{
+					console.log("wiiremote down")
+				}
+				if(gamepad.buttons[2].value == 1)
+				{
+					console.log("wiiremote takeoff")
+				}
+				if(gamepad.buttons[3].value == 1)
+				{
+					console.log("wiiremote right")
+				}
+				if(gamepad.buttons[4].value == 1)
+				{
+					console.log("wiiremote left")
+				}
+				if(gamepad.buttons[5].value == 1)
+				{
+					console.log("wiiremote 1 button")
+				}
+				if(gamepad.buttons[6].value == 1)
+				{
+					console.log("wiiremote land")
+				}
+			}, 100)
+		})
+
+		// // if(gamepad)
+		// // {	
+		// 	console.log("gamepad interval")
+		// 	setInterval(()=>{
+		// 		for(x= 0; x<=gamepad.buttons.length; x++)
+		// 		{
+		// 			console.log(gamepad.buttons[x].value)
+		// 		}
+		// 	}, 1000)
+		// // }
+
 		window.addEventListener('keydown', (event)=>{
+				// switch(event.keyCode)
+				// {
+				// 	case 39:
+				// 		console.log("right")
+				// 		ws.send("rotate-right")
+				// 		break;
+				// 	case 37:
+				// 		console.log("left")
+				// 		ws.send("rotate-left")
+				// 		break
+				// 	case 80:
+				// 		ws.send("takeoff")
+				// 		console.log("takeoff")
+				// 		break;
+				// 	case 16:
+				// 		ws.send("land")
+				// 		break;
+				// 	case 87:
+				// 		ws.send("forward")
+				// 	case 83:
+				// 		ws.send("backward")
+				// 		break
+				// 	case 65:
+				// 		ws.send("left")
+				// 		console.log("left")
+				// 		break
+				// 	case 68:
+				// 		ws.send("right")
+				// 		console.log("right")
+				// 		break
+				// 	case 38:
+				// 		ws.send("up")
+				// 		console.log('up')
+				// 		break
+				// 	case 40:
+				// 		ws.send("down")
+				// 		console.log("down")
+				// 		break
+				// 	case 53:
+				// 		ws.send("flyaway")
+				// 		break
+					
+				// }
 				switch(event.keyCode)
 				{
-					case 39:
-						console.log("right")
-						ws.send("rotate-right")
-						break;
-					case 37:
-						console.log("left")
-						ws.send("rotate-left")
-						break
-					case 80:
-						ws.send("takeoff")
-						console.log("takeoff")
-						break;
-					case 16:
-						ws.send("land")
-						break;
-					case 87:
-						ws.send("forward")
-					case 83:
-						ws.send("backward")
-						break
-					case 65:
-						ws.send("left")
-						console.log("left")
-						break
-					case 68:
-						ws.send("right")
-						console.log("right")
-						break
-					case 38:
-						ws.send("up")
-						console.log('up')
-						break
-					case 40:
-						ws.send("down")
-						console.log("down")
-						break
-					case 53:
-						ws.send("flyaway")
-						break
-					
+					case 39://right arrow
+					console.log("rotate-right")
+					ws.send("rotate-right")
+					break;
+					case 37://left arrow
+					console.log("rotate-left")
+					ws.send("rotate-left")
+					break;
+					case 38://arrow up for forward
+					console.log("arrow up forward")
+					ws.send("forward")
+					break;
+					case 40: //arrow down for backward
+					console.log("arrow down backward")
+					ws.send("backward")
+					break;
+					case 13://enter
+					console.log("enter to takeoff")
+					ws.send("takeoff")
+					break;
+					case 65://A
+					console.log("A to left move")
+					ws.send("left")
+					break;
+					case 68://D
+					console.log("D to right move")
+					ws.send("right")
+					break;
+					case 9://Tab
+					console.log("Tab to go up")
+					ws.send("up")
+					break;
+					case 16://Shift
+					console.log("shift to lower level")
+					ws.send("down")
+					break;
+					case 17://left Ctrl
+					console.log("land")
+					ws.send("land")
 				}
 			})
 		ws.onmessage = (msg)=>{
+			// console.log(gamepad.buttons[1].value) trigger
 			const content = JSON.parse(msg.data)
-			console.log(content.yaw)
+			// console.log(content.yaw)
 			document.querySelector('.battery-state').innerHTML = content.battery
 			document.querySelector('.temp-state').innerHTML = `${content.temperature.low} / ${content.temperature.high}`
 			document.querySelector('.h-slider').value = content.heigh
